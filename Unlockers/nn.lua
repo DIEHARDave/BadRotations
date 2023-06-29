@@ -22,7 +22,6 @@ local unlockList =
 	"ChangeActionBarPage",
 	"ClearOverrideBindings",
 	"ClearTarget",
---	"EquipPendingItem",
 	"CreateMacro",
 	"DeleteCursorItem",
 	"DeleteMacro",
@@ -309,7 +308,6 @@ function br.unlock:NNUnlock()
 	-- b.DirectoryExists = DirectoryExists
 	-- b.WriteFile = WriteFile
 	b.ClickPosition = ClickPosition
---	b.EquipPendingItem = EquipPendingItem
 	-- b.CreateDirectory = CreateDirectory
 	b.GetKeyState = GetKeyState
 	b.ObjectName = ObjectName
