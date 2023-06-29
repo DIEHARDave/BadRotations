@@ -99,7 +99,8 @@ end
 -- Custom Print
 function br.debugPrint(message)
 	if br.data.settings[br.selectedSpec].toggles["isDebugging"] == true then
-		br._G.print(message)
+		--br._G.print(message)
+		DevTool:AddData(br._G.print(message), "BR")
 	end
 end
 -- Run

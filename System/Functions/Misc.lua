@@ -172,6 +172,18 @@ function br.carapaceMath(Unit1, Unit2)
 	end
 end
 
+--[[
+function br.getLineOfSight(Unit1, Unit2)
+	local X1, Y1, Z1 = br.GetObjectPosition(Unit1)
+	local X2, Y2, Z2 = br.GetObjectPosition(Unit2)
+	trace = br._G.TraceLine(X1, Y1, Z1+2, X2, Y2, Z2+2, 0x100111)
+	if trace == nil or trace == false then
+		print(br.getLineOfSight)
+		return true
+	end
+end
+]]--
+
 function br.getLineOfSight(Unit1, Unit2)
 	if Unit2 == nil then
 		Unit2 = Unit1
@@ -198,7 +210,7 @@ function br.getLineOfSight(Unit1, Unit2)
 		if (X1 == nil or X2 == nil or pX == nil) then return false end
 		-- Trace to see if we are in Line of Sight
 		if br.player and br.player.eID and (br.player.eID == 2398 or br.player.eID == 2399) then
-			trace = br._G.TraceLine(X1, Y1, Z1 + 2--[[.25]], X2, Y2, Z2 + 2--[[.25]], 0x100111)
+			trace = br._G.TraceLine(X1, Y1, Z1 + 2, X2, Y2, Z2 + 2, 0x100111)
 		else
 			trace = br._G.TraceLine(X1, Y1, Z1 + 2.25, X2, Y2, Z2 + 2.25, flags)
 			-- if (br._G.UnitIsUnit(Unit2,"target")) then
@@ -206,7 +218,10 @@ function br.getLineOfSight(Unit1, Unit2)
 			-- end
 		end
 		if trace == nil or trace == false then
-			--Print("Past Traceline")
+			--print("Past Traceline")
+			--print(ObjectPosition(Unit1))
+			--print(ObjectPosition(Unit2))
+			--print(pX)
 			if br.player and br.player.eID and br.player.eID == 2141 then
 				if pX < -108 and X2 < -108 then
 					return true
@@ -218,26 +233,27 @@ function br.getLineOfSight(Unit1, Unit2)
 					return false
 				end
 			elseif br.player and br.player.eID and br.player.eID == 2337 then
-				--Print("Past Cara Check")
+				--print("Past Cara Check")
 				if br.carapaceMath(Unit1, Unit2) == true then
-					--Print("Cara True")
+					--print("Cara True")
 					return true
 				else
-					--Print("cara False")
+					--print("cara False")
 					return false
 				end
 			else
-				--Print("Skippped all the code")
+				--print("Skippped all the code")
 				return true
 			end
 		else
-			-- br._G.print("Really Skipped it all")
+			--print("Really Skipped it all")
 			return true
 		end
 	else
 		return false
 	end
 end
+
 -- if getGround("target"[,"target"]) then
 function br.getGround(Unit)
 	if br.GetObjectExists(Unit) and br.GetUnitIsVisible(Unit) then

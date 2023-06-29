@@ -93,19 +93,6 @@ function br.read.commonReaders()
 		end
 	end
 	Frame:SetScript("OnEvent", MerchantShow)
-	-----------------------
-	--[[ Bind On Equip --]]
-	Frame = br._G.CreateFrame("Frame")
-	Frame:RegisterEvent("EQUIP_BIND_CONFIRM")
-	local function BindOnEquip(self, event, ...)
-		if event == "EQUIP_BIND_CONFIRM" then
-			if br.getOptionCheck("Auto-Bind On Equip") then
-				EquipPendingItem(0)
-				br._G.print("Auto-Binding On Equip!")
-			end
-		end
-	end
-	Frame:SetScript("OnEvent", BindOnEquip)
 	-------------------------
 	--[[ Entering Combat --]]
 	Frame = br._G.CreateFrame("Frame")

@@ -22,7 +22,6 @@ local unlockList =
 	"ChangeActionBarPage",
 	"ClearOverrideBindings",
 	"ClearTarget",
---	"EquipPendingItem",
 	"CreateMacro",
 	"DeleteCursorItem",
 	"DeleteMacro",
@@ -118,7 +117,6 @@ local globalCacheList =
 	"DemoteAssistant",
 	"DropItemOnUnit",
 	"FollowUnit",
-	"GetCursorPosition",
 	"GetDefaultLanguage",
 	"GetPartyAssignment",
 	"GetPlayerInfoByGUID",
@@ -203,7 +201,7 @@ local globalCacheList =
 	"UnitPlayerOrPetInParty",
 	"UnitPlayerOrPetInRaid",
 	"UnitPower",
---	"UnitPower",
+	"UnitPower",
 	"UnitPowerMax",
 	"UnitPowerType",
 	"UnitPVPName",
@@ -309,7 +307,6 @@ function br.unlock:NNUnlock()
 	-- b.DirectoryExists = DirectoryExists
 	-- b.WriteFile = WriteFile
 	b.ClickPosition = ClickPosition
---	b.EquipPendingItem = EquipPendingItem
 	-- b.CreateDirectory = CreateDirectory
 	b.GetKeyState = GetKeyState
 	b.ObjectName = ObjectName
@@ -324,7 +321,7 @@ function br.unlock:NNUnlock()
 	-- b.ObjectPointer = ObjectPointer
 	-- b.TraceLine = TraceLine
 
-	b.GetMousePosition = GetCursorPosition
+	b.GetMousePosition = b.GetCursorPosition
 	b.CancelPendingSpell = b.SpellStopTargeting
 	b.ObjectIsVisible = b.UnitIsVisible
 	b.IsAoEPending = b.SpellIsTargeting
