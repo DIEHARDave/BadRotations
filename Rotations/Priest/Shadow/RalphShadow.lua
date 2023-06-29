@@ -1,4 +1,4 @@
-local rotationName = "RalphShadowFix" -- Change to name of profile listed in options drop down
+local rotationName = "RalphShadow" -- Change to name of profile listed in options drop down
 
 ---------------
 --- Toggles ---
@@ -281,9 +281,9 @@ local function CwC()
     if cast.current.mindSear() and buff.boonOfTheAscended.exists() and cd.ascendedBlast.ready() then
         if cast.cancel.mindSear() then ui.debug("Stop Mind Sear for ascended blast [CwC]") return end
     end
---    if cast.current.mindSear() and msTicks >= 5 and cast.last.searingNightmare() and power > 30 then
---        if cast.cancel.mindSear() then ui.debug("Stop Mind Sear after 2nd SnM [CwC]") return end
---    end
+    if cast.current.mindSear() and msTicks >= 5 and cast.last.searingNightmare() and power > 30 then
+        if cast.cancel.mindSear() then ui.debug("Stop Mind Sear after 2nd SnM [CwC]") return end
+    end
     
     -- # Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not ready, or to refresh SW:P on two or more targets.
     -- actions.cwc=searing_nightmare,use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!variable.pool_for_cds)|(dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)
@@ -745,14 +745,10 @@ actionList.Main = function()
     
     -- # Use Surrender to Madness on a target that is going to die at the right time.
     -- actions.main+=/surrender_to_madness,target_if=target.time_to_die<25&buff.voidform.down
-
---[[
     if ui.checked("Surrender to Madness") and talent.surrenderToMadness and ttd('target') < 25 and not buff.voidForm.exists() then
         if cast.surrenderToMadness() then ui.debug("Casting Surrender to Madness [Main]") return end
     end
-  ]]--  
-  
- 
+    
     -- # Use Void Torrent only if SW:P and VT are active and the target won't die during the channel.
     -- actions.main+=/void_torrent,target_if=variable.dots_up&target.time_to_die>3&buff.voidform.down&active_dot.vampiric_touch==spell_targets.vampiric_touch&spell_targets.mind_sear<(5+(6*talent.twist_of_fate.enabled))
     if not buff.boonOfTheAscended.exists() and not moving and dotsUp and ttd('target') > 5 and not voidform and not cast.last.voidEruption() and not vtCheck() and #searEnemies < (5 + (6 * ToF())) and power <= 60 then
@@ -1029,4 +1025,3 @@ br._G.tinsert(br.rotations[id],{
     options = createOptions,
     run = runRotation,
 })
-
