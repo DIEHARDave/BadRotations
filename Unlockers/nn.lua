@@ -311,11 +311,10 @@ function br.unlock:NNUnlock()
 	-- API Wrapping
 	--------------------------------
 -- Testing
-	b.GetCameraPosition = C_Commentator.GetCameraPosition
-
 
 	------------------------- Missing API Functions -------------------------
 	b.GetKeyState = GetKeyState
+	b.GetCameraPosition = GetCameraPosition
 	b.ScreenToWorld = function()
 		return 0, 0
 	end
@@ -325,11 +324,11 @@ function br.unlock:NNUnlock()
 
 	------------------------- Should be NN API functions ------------------------- 
 	b.UnitBoundingRadius = function(unit)
-		return b.ObjectField(unit, 0x19AC, 4) --b.ObjectField(unit, 0x17DC, 10)
+		return b.ObjectField(unit, 0x19AC, 4)
 	end
 
 	b.UnitCombatReach = function(unit)
-		return b.ObjectField(unit, 0x19B0, 4) --b.ObjectField(unit, 0x17E0, 10)
+		return b.ObjectField(unit, 0x19B0, 4)
 	end
 	
 	------------------------- NN Unused API Functions -------------------------
@@ -359,9 +358,11 @@ function br.unlock:NNUnlock()
 	b.GetObjectWithIndex = ObjectByIndex
 	b.GetAnglesBetweenPositions	= GetAnglesBetweenPositions
 	b.GetPositionFromPosition = GetPositionFromPosition
+	b.GetObjectWithIndex = ObjectByIndex
 	b.ObjectFacing = ObjectFacing
 	b.ObjectExists = ObjectExists
 	b.ObjectID = ObjectID
+	b.ObjectGUID = ObjectPointer
 	b.ObjectPosition = ObjectPosition
 	b.ObjectName = ObjectName
 	b.ObjectType = ObjectType
@@ -374,7 +375,12 @@ function br.unlock:NNUnlock()
 	b.UnitFacing = ObjectFacing
 	b.UnitMovementFlags = UnitMovementFlag
 	b.UnitTarget = UnitTarget
-
+	-- b.ReadFile = ReadFile
+	-- b.DirectoryExists = DirectoryExists
+	-- b.WriteFile = WriteFile
+	-- b.CreateDirectory = CreateDirectory
+	-- b.GetWoWDirectory = GetWowDirectory
+	
 	------------------------- Player Control -------------------
 	
 	b.FaceDirection = function(arg)
@@ -387,40 +393,40 @@ function br.unlock:NNUnlock()
 	end
 
 	------------------------- Object --------------------------
+--[[
 	b.ObjectGUID = function(unit)
 		return type(unit) == "number" and unit or ObjectPointer(unit)
 	end
+	b.ObjectPointer = function(unit)
+		return type(unit) == "number" and unit or ObjectPointer(unit)
+	end	
+]]--
 	b.ObjectIsUnit = function(...)
 		local ObjType = ObjectType(...)
 		return ObjType == 5
 	end
---[[
-	b.ObjectID = function(unit)
-		if unit == nil then return nil end
-		if (type(unit) == "string") then
-			local guid = UnitGUID(unit)
-			if guid == nil then return nil end
-			local _, _, _, _, _, npc_id = strsplit('-', guid)
-			return tonumber(npc_id)
-		end
-		return ObjectID(unit)
-	end
-]]--
-	b.ObjectIsGameObject = function(...)
-		local ObjType = ObjectType(...)
+	b.ObjectIsGameObject = function(obj)
+		local ObjType = b.ObjectType(obj)
 		return ObjType == 8 or ObjType == 11
 	end
-	
+
 	------------------------- Object Math ------------------
+	local math = math
 	b.GetDistanceBetweenPositions = function(X1, Y1, Z1, X2, Y2, Z2)
-		return math.sqrt(math.pow(X2 - X1, 2) + math.pow(Y2 - Y1, 2) + math.pow(Z2 - Z1, 2))
+		X2 = X2 - X1
+		Y2 = Y2 - Y1
+		Z2 = Z2 - Z1
+		return math.sqrt(X2*X2 + Y2*Y2 + Z2*Z2)
 	end
 	b.GetAnglesBetweenObjects = function(Object1, Object2)
 		if Object1 and Object2 then
 			local X1, Y1, Z1 = b.ObjectPosition(Object1)
 			local X2, Y2, Z2 = b.ObjectPosition(Object2)
-			return math.atan2(Y2 - Y1, X2 - X1) % (math.pi * 2),
-				math.atan((Z1 - Z2) / math.sqrt(math.pow(X1 - X2, 2) + math.pow(Y1 - Y2, 2))) % math.pi
+			X2 = X2 - X1
+			Y2 = Y2 - Y1
+			Z2 = Z1 - Z2
+			return math.atan2(Y2, X2) % (math.pi * 2),
+				math.atan(Z2 / math.sqrt(X2*X2 + Y2*Y2)) % math.pi
 		else
 			return 0, 0
 		end
@@ -439,7 +445,7 @@ function br.unlock:NNUnlock()
 	b.GetDistanceBetweenObjects = function(unit1, unit2)
 		local X1, Y1, Z1 = b.ObjectPosition(unit1)
 		local X2, Y2, Z2 = b.ObjectPosition(unit2)
-		return math.sqrt((X2 - X1) ^ 2 + (Y2 - Y1) ^ 2 + (Z2 - Z1) ^ 2)
+		return b.GetDistanceBetweenPositions(X1, Y1, Z1, X2, Y2, Z2)
 	end
 	b.ObjectIsFacing = function(obj1, obj2, degrees)
 		local Facing = b.UnitFacing(obj1)
@@ -456,9 +462,11 @@ function br.unlock:NNUnlock()
 		om = Objects()
 		return #Objects()
 	end
+--[[
 	b.GetObjectWithIndex = function(index)
 		return om[index]--ObjectByIndex(index)
 	end
+]]---
 	b.GetObjectWithGUID = function(...)
 		return ...
 	end
@@ -515,9 +523,8 @@ function br.unlock:NNUnlock()
 	b.GetWoWDirectory = function()
 		return "\\scripts"
 	end
-	------------------------------------------
-	--- WoW API CastSpellByName Fix
-	------------------------------------------
+	
+	------------------------- CastSpellByName Fix -------------------------
 	b.CastSpellByName = function(spellName, unit)
 		if unit == nil then return CastSpellByName(spellName) end --b.print("No unit provided to CastSpellByName") end
 		return BRCastSpellByName(spellName, unit)
@@ -539,7 +546,25 @@ function br.unlock:NNUnlock()
 	-- extra APIs
 	--------------------------------
 	b.AuraUtil = {}
-	b.AuraUtil.FindAuraByName = _G.AuraUtil["FindAuraByName"]
+	b.AuraUtil.FindAuraByName = function(aura,unit,filter)
+		unit = b.ObjectPointer(unit)
+		if not unit then return end
+		local oldfocus = GetFocus()
+		SetFocus(unit)
+		local name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal,
+		spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
+		for i=1,100 do
+			name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal,
+			spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = b.UnitAura('focus',i,filter)
+			if name == nil then SetFocus(oldfocus)return end
+			if name == aura then
+				SetFocus(oldfocus)
+				return name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal,
+				spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
+			end
+		end
+		SetFocus(oldfocus)
+	end
 
 	b.IsHackEnabled = function(...) return false end
 
