@@ -3,9 +3,9 @@
 --------------------------------------------------------------------------------------------------------------------------------
 local unlockList =
 {
+	-- Protected --
+	"AscendStop",
 	"AcceptBattlefieldPort",
-	"AcceptProposal",
-	"AcceptTrade",
 	"AssistUnit",
 	"AttackTarget",
 	"CameraOrSelectOrMoveStart",
@@ -13,31 +13,28 @@ local unlockList =
 	"CancelItemTempEnchantment",
 	"CancelLogout",
 	"CancelShapeshiftForm",
-	"CancelUnitBuff",
 	"CastPetAction",
 	"CastShapeshiftForm",
 	"CastSpell",
 	"CastSpellByID",
 	"CastSpellByName",
-	"ChangeActionBarPage",
-	"ClearOverrideBindings",
 	"ClearTarget",
-	"CreateMacro",
-	"DeleteCursorItem",
-	"DeleteMacro",
+	"CopyToClipboard",
 	"DescendStop",
 	"DestroyTotem",
 	"FocusUnit",
 	"ForceQuit",
-	"GetUnscaledFrameRect",
 	"GuildControlSetRank",
 	"GuildControlSetRankFlag",
 	"GuildDemote",
 	"GuildPromote",
 	"GuildUninvite",
+	"InteractUnit",
 	"JoinBattlefield",
 	"JumpOrAscendStart",
 	"Logout",
+	"MoveAndSteerStart",
+	"MoveAndSteerStop",
 	"MoveBackwardStart",
 	"MoveBackwardStop",
 	"MoveForwardStart",
@@ -48,72 +45,91 @@ local unlockList =
 	"PetDefensiveMode",
 	"PetFollow",
 	"PetPassiveMode",
-	"PetStopAttack",
 	"PetWait",
-	"PickupAction",
-	"PickupCompanion",
-	"PickupMacro",
-	"PickupPetAction",
-	"PickupSpell",
-	"PickupSpellBookItem",
+	"PitchDownStart",
+	"PitchDownStop",
+	"PitchUpStart",
+	"PitchUpStop",
 	"Quit",
 	"ReplaceEnchant",
 	"ReplaceTradeEnchant",
 	"RunMacro",
 	"RunMacroText",
-	"StartAttack",
-	"SendChatMessage",
-	"SetBinding",
-	"SetBindingClick",
-	"SetBindingItem",
-	"SetBindingMacro",
-	"SetBindingSpell",
-	"SetCurrentTitle",
 	"SetMoveEnabled",
-	"SetOverrideBinding",
-	"SetOverrideBindingClick",
-	"SetOverrideBindingItem",
-	"SetOverrideBindingMacro",
-	"SetOverrideBindingSpell",
 	"SetTurnEnabled",
-	"ShowUIPanel",
 	"SitStandOrDescendStart",
 	"SpellStopCasting",
 	"SpellStopTargeting",
+	"SpellTargetItem",
 	"SpellTargetUnit",
+	"StartAttack",
+	"StartAutoRun",
+	"StopAutoRun",
 	"StrafeLeftStart",
 	"StrafeLeftStop",
 	"StrafeRightStart",
 	"StrafeRightStop",
 	"Stuck",
+	"SummonFriend",
 	"TargetLastEnemy",
 	"TargetLastTarget",
 	"TargetNearestEnemy",
 	"TargetNearestFriend",
 	"TargetUnit",
 	"ToggleAutoRun",
+	"TogglePetAutocast",
 	"ToggleRun",
+	"ToggleSpellAutocast",
 	"TurnLeftStart",
 	"TurnLeftStop",
 	"TurnOrActionStart",
 	"TurnOrActionStop",
 	"TurnRightStart",
 	"TurnRightStop",
-	"UninviteUnit",
 	"UseAction",
 	"UseContainerItem",
+	"UseInventoryItem",
 	"UseItemByName",
 	"UseToy",
-	"UseToyByName"
+	"UseToyByName",
+	-- NonCombat Restricted --
+	"CancelUnitBuff",
+	"ChangeActionBarPage",
+	"ClearOverrideBindings",
+	"CreateMacro",
+	"DeleteMacro",
+	"PetStopAttack",
+	"PickupAction",
+	"PickupCompanion",
+	"PickupMacro",
+	"PickupPetAction",
+	"PickupSpell",
+	"PickupSpellBookItem",
+	"SetBinding",
+	"SetBindingClick",
+	"SetBindingItem",
+	"SetBindingMacro",
+	"SetBindingSpell",
+	"SetOverrideBinding",
+	"SetOverrideBindingClick",
+	"SetOverrideBindingItem",
+	"SetOverrideBindingMacro",
+	"SetOverrideBindingSpell",
+	"SwapRaidSubgroup",
+	-- Hardware Restricted --
+	"AcceptProposal",
+	"AcceptTrade",
+	"DeleteCursorItem",
+	"SendChatMessage",
+	"SetCurrentTitle",
+	"UninviteUnit"
 }
 
 local globalCacheList =
 {
-	"AscendStop",
+	"CanLootUnit",
 	"CanSummonFriend",
-	"CheckInteractDistance",
 	"CombatTextSetActiveUnit",
-	"CopyToClipboard",
 	"DemoteAssistant",
 	"DropItemOnUnit",
 	"FollowUnit",
@@ -126,23 +142,13 @@ local globalCacheList =
 	"GetUnitName",
 	"GetUnitSpeed",
 	"InitiateTrade",
-	"InteractUnit",
 	"IsItemInRange",
 	"IsSpellInRange",
-	"PitchDownStart",
-	"PitchDownStop",
-	"PitchUpStart",
 	"PromoteToAssistant",
 	"SetPortraitTexture",
 	"SetRaidTarget",
 	"SpellCanTargetUnit",
 	"SpellIsTargeting",
-	"SpellTargetItem",
-	"StartAttack",
-	"SummonFriend",
-	"SwapRaidSubgroup",
-	"ToggleGameMenu",
-	"ToggleSpellAutocast",
 	"UnitAffectingCombat",
 	"UnitArmor",
 	"UnitAttackPower",
@@ -153,6 +159,7 @@ local globalCacheList =
 	"UnitCanAssist",
 	"UnitCanAttack",
 	"UnitCanCooperate",
+	"UnitCanPetBattle",
 	"UnitCastingInfo",
 	"UnitChannelInfo",
 	"UnitClass",
@@ -202,7 +209,6 @@ local globalCacheList =
 	"UnitPlayerOrPetInParty",
 	"UnitPlayerOrPetInRaid",
 	"UnitPower",
---	"UnitPower",
 	"UnitPowerMax",
 	"UnitPowerType",
 	"UnitPVPName",
@@ -216,8 +222,7 @@ local globalCacheList =
 	"UnitThreatSituation",
 	"UnitUsingVehicle",
 	"UnitXP",
-	"UnitXPMax",
-	"UseInventoryItem"
+	"UnitXPMax"
 }
 
 
@@ -286,6 +291,7 @@ function br.unlock:NNUnlock()
 	if not C_Timer.Nn then return false end
 	setfenv(1, C_Timer.Nn)
 	-- print("NN Api Loaded")
+
 	--------------------------------
 	-- API unlocking
 	--------------------------------
@@ -302,46 +308,93 @@ function br.unlock:NNUnlock()
 	end
 
 	--------------------------------
-	-- API copy/rename/unlock
+	-- API Wrapping
 	--------------------------------
-	-- b.ReadFile = ReadFile
-	-- b.DirectoryExists = DirectoryExists
-	-- b.WriteFile = WriteFile
-	b.ClickPosition = ClickPosition
-	-- b.CreateDirectory = CreateDirectory
+-- Testing
+	b.GetCameraPosition = C_Commentator.GetCameraPosition
+
+
+	------------------------- Missing API Functions -------------------------
 	b.GetKeyState = GetKeyState
-	b.ObjectName = ObjectName
-	-- b.GetObjectWithIndex = ObjectByIndex
-	b.ObjectPosition = ObjectPosition
-	b.UnitMovementFlags = UnitMovementFlag
-	-- b.GetWoWDirectory = GetWowDirectory
+	b.ScreenToWorld = function()
+		return 0, 0
+	end
+	b.IsQuestObject = function(obj)
+		return false
+	end
+
+	------------------------- Should be NN API functions ------------------------- 
+	b.UnitBoundingRadius = function(unit)
+		return b.ObjectField(unit, 0x19AC, 4) --b.ObjectField(unit, 0x17DC, 10)
+	end
+
+	b.UnitCombatReach = function(unit)
+		return b.ObjectField(unit, 0x19B0, 4) --b.ObjectField(unit, 0x17E0, 10)
+	end
+	
+	------------------------- NN Unused API Functions -------------------------
+	--ObjectRotation
+	--ObjectYaw
+	--PlayerTarget
+	--UnitFlags1
+	--UnitFlags2
+	--UnitFlags3
+	--DynamicFlags
+	--ObjectLootable --Broken Anyway?
+	--ObjectSkinnable --Broken Anyway?
+	--PlayerObject
+	--GameObjectType
+	--GetFocus
+	--SetFocus
+	--GetMouseover
+	--SetMouseover
+	--LastHardwareAction
+	--LastTerrainClick
+	--UnitCreatureTypeId
+	--GetCorpsePosition
+	--GetSpecByDescriptor
+	
+	------------------------- NN Direct API Functions -------------------------
+	b.ClickPosition = ClickPosition
+	b.GetObjectWithIndex = ObjectByIndex
+	b.GetAnglesBetweenPositions	= GetAnglesBetweenPositions
+	b.GetPositionFromPosition = GetPositionFromPosition
 	b.ObjectFacing = ObjectFacing
 	b.ObjectExists = ObjectExists
-	b.GetCameraPosition = GetCameraPosition
+	b.ObjectID = ObjectID
+	b.ObjectPosition = ObjectPosition
+	b.ObjectName = ObjectName
+	b.ObjectType = ObjectType
+	b.ObjectRawType = ObjectType
+	b.ObjectInteract = ObjectInteract
+	b.ObjectPointer = ObjectPointer
+	b.ObjectSummoner = ObjectSummoner
+	b.TraceLine = TraceLine 
+	b.UnitCreator =  ObjectCreator
 	b.UnitFacing = ObjectFacing
-	-- b.ObjectPointer = ObjectPointer
-	-- b.TraceLine = TraceLine
+	b.UnitMovementFlags = UnitMovementFlag
+	b.UnitTarget = UnitTarget
 
-	b.GetMousePosition = GetCursorPosition
-	b.CancelPendingSpell = b.SpellStopTargeting
-	b.ObjectIsVisible = b.UnitIsVisible
-	b.IsAoEPending = b.SpellIsTargeting
-	b.ObjectInteract = b.ObjectInteract
-	b.InteractUnit = b.ObjectInteract
-
-	b.TraceLine = function(unit1X, unit1Y, unit1Z, unit2X, unit2Y, unit2Z, offset)
-		return TraceLine(unit1X, unit1Y, unit1Z, unit2X, unit2Y, unit2Z, offset) == false
+	------------------------- Player Control -------------------
+	
+	b.FaceDirection = function(arg)
+		if type(arg) == "number" then
+			SetPlayerFacing(arg)
+		else
+			arg = b.GetAnglesBetweenObjects("player", arg)
+			SetPlayerFacing(arg)
+		end
 	end
 
-	b.CastSpellByName = function(spellName, unit)
-		if unit == nil then return CastSpellByName(spellName) end --b.print("No unit provided to CastSpellByName") end
-		return BRCastSpellByName(spellName, unit)
-	end
-
-	b.ObjectPointer = function(unit)
+	------------------------- Object --------------------------
+	b.ObjectGUID = function(unit)
 		return type(unit) == "number" and unit or ObjectPointer(unit)
 	end
-
+	b.ObjectIsUnit = function(...)
+		local ObjType = ObjectType(...)
+		return ObjType == 5
+	end
+--[[
 	b.ObjectID = function(unit)
 		if unit == nil then return nil end
 		if (type(unit) == "string") then
@@ -352,27 +405,52 @@ function br.unlock:NNUnlock()
 		end
 		return ObjectID(unit)
 	end
+]]--
+	b.ObjectIsGameObject = function(...)
+		local ObjType = ObjectType(...)
+		return ObjType == 8 or ObjType == 11
+	end
+	
+	------------------------- Object Math ------------------
+	b.GetDistanceBetweenPositions = function(X1, Y1, Z1, X2, Y2, Z2)
+		return math.sqrt(math.pow(X2 - X1, 2) + math.pow(Y2 - Y1, 2) + math.pow(Z2 - Z1, 2))
+	end
+	b.GetAnglesBetweenObjects = function(Object1, Object2)
+		if Object1 and Object2 then
+			local X1, Y1, Z1 = b.ObjectPosition(Object1)
+			local X2, Y2, Z2 = b.ObjectPosition(Object2)
+			return math.atan2(Y2 - Y1, X2 - X1) % (math.pi * 2),
+				math.atan((Z1 - Z2) / math.sqrt(math.pow(X1 - X2, 2) + math.pow(Y1 - Y2, 2))) % math.pi
+		else
+			return 0, 0
+		end
+	end
+	b.GetPositionBetweenPositions = function(X1, Y1, Z1, X2, Y2, Z2, DistanceFromPosition1)
+		local AngleXY, AngleXYZ = b.GetAnglesBetweenPositions(X1, Y1, Z1, X2, Y2, Z2)
+		return b.GetPositionFromPosition(X1, Y1, Z1, DistanceFromPosition1, AngleXY, AngleXYZ)
+	end
+	b.GetPositionBetweenObjects = function(unit1, unit2, DistanceFromPosition1)
+		local X1, Y1, Z1 = b.ObjectPosition(unit1)
+		local X2, Y2, Z2 = b.ObjectPosition(unit2)
+		if not X1 or not X2 then return end
+		local AngleXY, AngleXYZ = b.GetAnglesBetweenPositions(X1, Y1, Z1, X2, Y2, Z2)
+		return b.GetPositionFromPosition(X1, Y1, Z1, DistanceFromPosition1, AngleXY, AngleXYZ)
+	end
+	b.GetDistanceBetweenObjects = function(unit1, unit2)
+		local X1, Y1, Z1 = b.ObjectPosition(unit1)
+		local X2, Y2, Z2 = b.ObjectPosition(unit2)
+		return math.sqrt((X2 - X1) ^ 2 + (Y2 - Y1) ^ 2 + (Z2 - Z1) ^ 2)
+	end
+	b.ObjectIsFacing = function(obj1, obj2, degrees)
+		local Facing = b.UnitFacing(obj1)
+		local AngleToUnit = b.GetAnglesBetweenObjects(obj1, obj2)
+		local AngleDifference = Facing > AngleToUnit and Facing - AngleToUnit or AngleToUnit - Facing
+		local ShortestAngle = AngleDifference < math.pi and AngleDifference or math.pi * 2 - AngleDifference
+		degrees = degrees and b.rad(degrees) / 2 or math.pi / 2
+		return ShortestAngle < degrees
+	end
 
-	b.UnitTarget = function(unit)
-		return UnitTarget(unit)
-	end
-	b.UnitCreator = function(unit)
-		return UnitCreator(unit)
-	end
-	b.UnitBoundingRadius = function(unit)
-		return ObjectBoundingRadius(unit)
-	end
-	b.UnitCombatReach = function(unit)
-		return CombatReach(unit)
-	end
-
-
-	--------------------------------
-	-- API conversions
-	--------------------------------
-	b.GetWoWDirectory = function()
-		return "\\scripts"
-	end
+	------------------------- Object Manager ------------------
 	local om = {}
 	b.GetObjectCount = function()
 		om = Objects()
@@ -381,19 +459,23 @@ function br.unlock:NNUnlock()
 	b.GetObjectWithIndex = function(index)
 		return om[index]--ObjectByIndex(index)
 	end
-	b.ObjectType = function(...)
-		return ObjectType(...)
+	b.GetObjectWithGUID = function(...)
+		return ...
 	end
-	b.ObjectIsUnit = function(...)
-		local ObjType = ObjectType(...)
-		return ObjType == 5
-	end
+	------------------------- Unit ------------------
 	b.UnitCastID = function(...)
 		local spellId1 = select(9, b.UnitCastingInfo(...)) or 0
 		local spellId2 = select(9, b.UnitChannelInfo(...)) or 0
 		local castGUID = b.UnitTarget(select(1, ...))
 		return spellId1, spellId2, castGUID, castGUID
 	end
+	------------------------- World ---------------------------
+	b.WorldToScreen = function(...)
+		local multiplier = UIParent:GetScale()
+		local sX, sY = WorldToScreen(...)
+		return sX * multiplier, -sY * multiplier
+	end
+	------------------------- File ----------------------------	
 	b.GetDirectoryFiles = function(...)
 		local str = ...
 		if str == nil then return "" end
@@ -430,95 +512,39 @@ function br.unlock:NNUnlock()
 		local path = ... --fixPath(...)
 		return DirectoryExists(path)
 	end
-	b.WorldToScreen = function(...)
-		local multiplier = UIParent:GetScale()
-		local sX, sY = WorldToScreen(...)
-		return sX * multiplier, -sY * multiplier
+	b.GetWoWDirectory = function()
+		return "\\scripts"
 	end
-	b.FaceDirection = function(arg)
-		if type(arg) == "number" then
-			SetPlayerFacing(arg)
-		else
-			arg = b.GetAnglesBetweenObjects("player", arg)
-			SetPlayerFacing(arg)
-		end
+	------------------------------------------
+	--- WoW API CastSpellByName Fix
+	------------------------------------------
+	b.CastSpellByName = function(spellName, unit)
+		if unit == nil then return CastSpellByName(spellName) end --b.print("No unit provided to CastSpellByName") end
+		return BRCastSpellByName(spellName, unit)
 	end
-	b.GetObjectWithGUID = function(...)
-		return ...
-	end
-	b.IsHackEnabled = function(...) return false end
+
 	--------------------------------
-	-- math
+	-- WoW API Reuse
 	--------------------------------
-	b.GetDistanceBetweenPositions = function(X1, Y1, Z1, X2, Y2, Z2)
-		return math.sqrt(math.pow(X2 - X1, 2) + math.pow(Y2 - Y1, 2) + math.pow(Z2 - Z1, 2))
+	b.ObjectIsVisible = b.UnitIsVisible
+	b.GetMousePosition = b.GetCursorPosition
+	b.CancelPendingSpell = b.SpellStopTargeting
+	b.IsAoEPending = b.SpellIsTargeting
+	b.InteractUnit = b.ObjectInteract
+	b.GetMapId = function()
+		return select(8, b.GetInstanceInfo())
 	end
-	b.GetAnglesBetweenObjects = function(Object1, Object2)
-		if Object1 and Object2 then
-			local X1, Y1, Z1 = b.ObjectPosition(Object1)
-			local X2, Y2, Z2 = b.ObjectPosition(Object2)
-			return math.atan2(Y2 - Y1, X2 - X1) % (math.pi * 2),
-				math.atan((Z1 - Z2) / math.sqrt(math.pow(X1 - X2, 2) + math.pow(Y1 - Y2, 2))) % math.pi
-		else
-			return 0, 0
-		end
-	end
-	b.GetAnglesBetweenPositions = function(X1, Y1, Z1, X2, Y2, Z2)
-		return math.atan2(Y2 - Y1, X2 - X1) % (math.pi * 2),
-			math.atan((Z1 - Z2) / math.sqrt(math.pow(X1 - X2, 2) + math.pow(Y1 - Y2, 2))) % math.pi
-	end
-	b.GetPositionFromPosition = function(X, Y, Z, Distance, AngleXY, AngleXYZ)
-		return math.cos(AngleXY) * Distance + X, math.sin(AngleXY) * Distance + Y, math.sin(AngleXYZ) * Distance + Z
-	end
-	b.GetPositionBetweenPositions = function(X1, Y1, Z1, X2, Y2, Z2, DistanceFromPosition1)
-		local AngleXY, AngleXYZ = b.GetAnglesBetweenPositions(X1, Y1, Z1, X2, Y2, Z2)
-		return b.GetPositionFromPosition(X1, Y1, Z1, DistanceFromPosition1, AngleXY, AngleXYZ)
-	end
-	b.GetPositionBetweenObjects = function(unit1, unit2, DistanceFromPosition1)
-		local X1, Y1, Z1 = b.ObjectPosition(unit1)
-		local X2, Y2, Z2 = b.ObjectPosition(unit2)
-		if not X1 or not X2 then return end
-		local AngleXY, AngleXYZ = b.GetAnglesBetweenPositions(X1, Y1, Z1, X2, Y2, Z2)
-		return b.GetPositionFromPosition(X1, Y1, Z1, DistanceFromPosition1, AngleXY, AngleXYZ)
-	end
-	b.GetDistanceBetweenObjects = function(unit1, unit2)
-		local X1, Y1, Z1 = b.ObjectPosition(unit1)
-		local X2, Y2, Z2 = b.ObjectPosition(unit2)
-		return math.sqrt((X2 - X1) ^ 2 + (Y2 - Y1) ^ 2 + (Z2 - Z1) ^ 2)
-	end
-	b.ObjectIsFacing = function(obj1, obj2, degrees)
-		local Facing = b.UnitFacing(obj1)
-		local AngleToUnit = b.GetAnglesBetweenObjects(obj1, obj2)
-		local AngleDifference = Facing > AngleToUnit and Facing - AngleToUnit or AngleToUnit - Facing
-		local ShortestAngle = AngleDifference < math.pi and AngleDifference or math.pi * 2 - AngleDifference
-		degrees = degrees and b.rad(degrees) / 2 or math.pi / 2
-		return ShortestAngle < degrees
-	end
+	
 	--------------------------------
 	-- extra APIs
 	--------------------------------
 	b.AuraUtil = {}
 	b.AuraUtil.FindAuraByName = _G.AuraUtil["FindAuraByName"]
-	b.ObjectIsGameObject = function(...)
-		local ObjType = ObjectType(...)
-		return ObjType == 8 or ObjType == 11
-	end
-	b.GetMapId = function()
-		return select(8, b.GetInstanceInfo())
-	end
-	--------------------------------
-	-- missing APIs
-	--------------------------------
-	b.IsQuestObject = function(obj)
-		return false
-	end
-	b.ScreenToWorld = function()
-		return 0, 0
-	end
+
+	b.IsHackEnabled = function(...) return false end
 
 
-
-
+	-- Unlocker --
 	br.unlocker = "NN"
 	return true
 end
