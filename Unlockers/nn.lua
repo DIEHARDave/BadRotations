@@ -127,7 +127,7 @@ local unlockList =
 
 local globalCacheList =
 {
---	"CanLootUnit",
+	"CanLootUnit",
 	"CanSummonFriend",
 	"CombatTextSetActiveUnit",
 	"DemoteAssistant",
@@ -227,7 +227,7 @@ local globalCacheList =
 
 
 --------------------------------------------------------------------------------------------------------------------------------
--- functions exported to BadRotations
+-- functions exported to BadRotations --
 --------------------------------------------------------------------------------------------------------------------------------
 local _, br = ...
 local b = br._G
@@ -293,7 +293,7 @@ function br.unlock:NNUnlock()
 	-- print("NN Api Loaded")
 
 	--------------------------------
-	-- API unlocking
+	-- API unlocking --
 	--------------------------------
 	for k, v in pairs(funcCopies) do
 		b[k] = function(...) return Unlock(k, ...) end
@@ -308,10 +308,10 @@ function br.unlock:NNUnlock()
 	end
 
 	--------------------------------
-	-- API --
+	-- API Wraping --
 	--------------------------------
 
-	------------------------- Missing API Functions -------------------------
+	------------------------- Missing NN API Functions -------------------------
 	b.GetKeyState = GetKeyState
 	b.GetCameraPosition = GetCameraPosition
 	b.ScreenToWorld = function()
@@ -329,16 +329,17 @@ function br.unlock:NNUnlock()
 		return b.ObjectField(unit, 0x19B0, 4)
 	end
 	
-	------------------------- NN Unmapped API Functions -------------------------
+	------------------------- NN API Functions -------------------------
 	--ObjectRotation
 	--ObjectYaw
-	--PlayerTarget  -- = ObjectPointer
+	--PlayerTarget  -- Same as ObjectPointer
 	--UnitFlags1
 	--UnitFlags2
 	--UnitFlags3
+	--Distance
 	--DynamicFlags
-	--ObjectLootable --Broken Anyway?
-	--ObjectSkinnable --Broken Anyway?
+	--ObjectLootable
+	--ObjectSkinnable
 	--PlayerObject
 	--GameObjectType
 	--GetMouseover
@@ -348,33 +349,14 @@ function br.unlock:NNUnlock()
 	--UnitCreatureTypeId
 	--GetCorpsePosition
 	--GetSpecByDescriptor
+	
+	------ Navigation ------
 	--ClickToMove
+	--GenerateLocalPath
+	--GeneratePath
+	--Go
 	
-	------------------------- NN Direct API Functions -------------------------
-	b.ClickPosition = ClickPosition
-	b.GetObjectWithIndex = ObjectByIndex
-	b.GetAnglesBetweenPositions	= GetAnglesBetweenPositions
-	b.GetPositionFromPosition = GetPositionFromPosition
-	b.ObjectFacing = ObjectFacing
-	b.ObjectExists = ObjectExists
-	b.ObjectID = ObjectID
-	b.ObjectGUID = ObjectPointer
-	b.ObjectPosition = ObjectPosition
-	b.ObjectName = ObjectName
-	b.ObjectType = ObjectType
-	b.ObjectInteract = ObjectInteract
-	b.ObjectPointer = ObjectPointer
-	b.ObjectSummoner = ObjectSummoner
-	b.TraceLine = TraceLine 
-	b.UnitCreator =  ObjectCreator
-	b.UnitFacing = ObjectFacing
-	b.InteractUnit = ObjectInteract
-	b.UnitMovementFlags = UnitMovementFlag
-	b.UnitTarget = UnitTarget
-	
-	------------------------- NN Usage API Functions -------------------------
-
-	------------------------- Player Control -------------------
+	------------------------- Player Control -------------------------
 	--SetPlayerFacing
 	b.FaceDirection = function(arg)
 		if type(arg) == "number" then
@@ -385,7 +367,9 @@ function br.unlock:NNUnlock()
 		end
 	end
 
-	------------------------- Math ------------------
+	------------------------- Math -------------------------
+	b.GetAnglesBetweenPositions	= GetAnglesBetweenPositions
+	b.GetPositionFromPosition = GetPositionFromPosition
 	local math = math
 	b.GetDistanceBetweenPositions = function(X1, Y1, Z1, X2, Y2, Z2)
 		X2 = X2 - X1
@@ -431,7 +415,18 @@ function br.unlock:NNUnlock()
 		return ShortestAngle < degrees
 	end
 
-	------------------------- Objects ------------------
+	------------------------- Objects -------------------------
+	b.GetObjectWithIndex = ObjectByIndex
+	b.ObjectFacing = ObjectFacing
+	b.ObjectExists = ObjectExists
+	b.ObjectID = ObjectID
+	b.ObjectGUID = ObjectPointer
+	b.ObjectPosition = ObjectPosition
+	b.ObjectName = ObjectName
+	b.ObjectType = ObjectType
+	b.ObjectInteract = ObjectInteract
+	b.ObjectPointer = ObjectPointer
+	b.ObjectSummoner = ObjectSummoner
 	local om = {}
 	b.GetObjectCount = function()
 		om = Objects()
@@ -449,7 +444,12 @@ function br.unlock:NNUnlock()
 		return ObjType == 8 or ObjType == 11
 	end
 	
-	------------------------- Unit ------------------
+	------------------------- Unit -------------------------
+	b.UnitCreator =  ObjectCreator
+	b.UnitFacing = ObjectFacing
+	b.InteractUnit = ObjectInteract
+	b.UnitMovementFlags = UnitMovementFlag
+	b.UnitTarget = UnitTarget
 	b.UnitCastID = function(...)
 		local spellId1 = select(9, b.UnitCastingInfo(...)) or 0
 		local spellId2 = select(9, b.UnitChannelInfo(...)) or 0
@@ -457,6 +457,15 @@ function br.unlock:NNUnlock()
 		return spellId1, spellId2, castGUID, castGUID
 	end
 
+	------------------------- World ---------------------------
+	b.ClickPosition = ClickPosition
+	b.TraceLine = TraceLine 
+	b.WorldToScreen = function(...)
+		local multiplier = UIParent:GetScale()
+		local sX, sY = WorldToScreen(...)
+		return sX * multiplier, -sY * multiplier
+	end
+	
 	------------------------- File System ----------------------------	
 	--ReadFile
 	--DirectoryExists
@@ -509,9 +518,10 @@ function br.unlock:NNUnlock()
 		return "\\scripts"
 	end
 	
-	------------------------- Extra NN Usage APIs -------------------------
+	------------------------- Extra -------------------------
 	--GetFocus
 	--SetFocus
+	
 	b.AuraUtil = {}
 	b.AuraUtil.FindAuraByName = function(aura,unit,filter)
 		unit = b.ObjectPointer(unit)
@@ -534,22 +544,6 @@ function br.unlock:NNUnlock()
 	end
 	
 	--------------------------------
-	-- Custom APIs
-	--------------------------------
-	------------------------- CastSpellByName Fix -------------------------
-	b.CastSpellByName = function(spellName, unit)
-		if unit == nil then return CastSpellByName(spellName) end --b.print("No unit provided to CastSpellByName") end
-		return BRCastSpellByName(spellName, unit)
-	end
-
-	------------------------- World ---------------------------
-	b.WorldToScreen = function(...)
-		local multiplier = UIParent:GetScale()
-		local sX, sY = WorldToScreen(...)
-		return sX * multiplier, -sY * multiplier
-	end
-	
-	--------------------------------
 	-- WoW API Reuse
 	--------------------------------
 	b.ObjectIsVisible = b.UnitIsVisible
@@ -559,8 +553,14 @@ function br.unlock:NNUnlock()
 	b.GetMapId = function()
 		return select(8, b.GetInstanceInfo())
 	end
-
-	------------------------- Unlocker -------------------------
+	b.CastSpellByName = function(spellName, unit)
+		if unit == nil then return CastSpellByName(spellName) end --b.print("No unit provided to CastSpellByName") end
+		return BRCastSpellByName(spellName, unit)
+	end
+	
+	--------------------------------
+	-- Unlocker
+	--------------------------------
 	b.IsHackEnabled = function(...) return false end
 	br.unlocker = "NN"
 	return true
