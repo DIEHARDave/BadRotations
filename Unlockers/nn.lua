@@ -144,6 +144,7 @@ local globalCacheList =
 	"InitiateTrade",
 	"IsItemInRange",
 	"IsSpellInRange",
+	"IsWorldLootObject",
 	"PromoteToAssistant",
 	"SetPortraitTexture",
 	"SetRaidTarget",
@@ -222,7 +223,8 @@ local globalCacheList =
 	"UnitThreatSituation",
 	"UnitUsingVehicle",
 	"UnitXP",
-	"UnitXPMax"
+	"UnitXPMax",
+	"WorldLootObjectExists"
 }
 
 
@@ -311,16 +313,21 @@ function br.unlock:NNUnlock()
 	-- API Wraping --
 	--------------------------------
 
-	------------------------- Missing NN API Functions -------------------------
+	------------------------- Missing/Broken API Functions -------------------------
 	b.GetKeyState = GetKeyState
 	b.GetCameraPosition = GetCameraPosition
 	b.ScreenToWorld = function()
 		return 0, 0
 	end
+	b.WorldToScreen = function(...)
+		local multiplier = UIParent:GetScale()
+		local sX, sY = WorldToScreen(...)
+		return sX * multiplier, -sY * multiplier
+	end
 	b.IsQuestObject = function(obj)
 		return false
 	end
-
+	
 	------------------------- Should be NN API functions ------------------------- 
 	b.UnitBoundingRadius = function(unit)
 		return b.ObjectField(unit, 0x19AC, 4)
@@ -460,11 +467,7 @@ function br.unlock:NNUnlock()
 	------------------------- World ---------------------------
 	b.ClickPosition = ClickPosition
 	b.TraceLine = TraceLine 
-	b.WorldToScreen = function(...)
-		local multiplier = UIParent:GetScale()
-		local sX, sY = WorldToScreen(...)
-		return sX * multiplier, -sY * multiplier
-	end
+
 	
 	------------------------- File System ----------------------------	
 	--ReadFile
@@ -521,7 +524,6 @@ function br.unlock:NNUnlock()
 	------------------------- Extra -------------------------
 	--GetFocus
 	--SetFocus
-	
 	b.AuraUtil = {}
 	b.AuraUtil.FindAuraByName = function(aura,unit,filter)
 		unit = b.ObjectPointer(unit)
