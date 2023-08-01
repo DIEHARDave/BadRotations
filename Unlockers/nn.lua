@@ -314,41 +314,37 @@ function br.unlock:NNUnlock()
 	--------------------------------
 
 	------------------------- Missing/Broken API Functions -------------------------
-	b.GetKeyState = GetKeyState
-	b.GetCameraPosition = GetCameraPosition
-	b.ScreenToWorld = function()
-		return 0, 0
+	b.GetKeyState = Nn.GetKeyState
+	b.GetCameraPosition = Nn.CameraPosition
+	b.ScreenToWorld = function(...)
+		return Nn.ScreenToWorld(...)
 	end
-	b.WorldToScreen = function(...)
-		local multiplier = UIParent:GetScale()
-		local sX, sY = WorldToScreen(...)
-		return sX * multiplier, -sY * multiplier
-	end
-	b.IsQuestObject = function(obj)
-		return false
-	end
+
 	
-	------------------------- Should be NN API functions ------------------------- 
+	------------------------- Should be NN API functions to auto update offsets! ------------------------- 
+	--ObjectField
 	b.UnitBoundingRadius = function(unit)
-		return b.ObjectField(unit, 0x19AC, 4)
+		return ObjectField(unit, 0x19AC, 4)
 	end
 	b.UnitCombatReach = function(unit)
-		return b.ObjectField(unit, 0x19B0, 4)
+		return ObjectField(unit, 0x19B0, 4)
 	end
+	
+	--ObjectWorldPosition
 	
 	------------------------- NN API Functions -------------------------
 	--ObjectRotation
 	--ObjectYaw
 	--PlayerTarget  -- Same as ObjectPointer
-	--UnitFlags1
-	--UnitFlags2
-	--UnitFlags3
+	--Nn.UnitFlags1
+	--Nn.UnitFlags2
+	--Nn.UnitFlags3
 	--Distance
-	--DynamicFlags
-	--ObjectLootable
-	--ObjectSkinnable
+	--Nn.DynamicFlags
+	--Nn.ObjectLootable
+	--Nn.ObjectSkinnable
 	--PlayerObject
-	--GameObjectType
+	--Nn.GameObjectType
 	--GetMouseover
 	--SetMouseover
 	--LastHardwareAction
@@ -450,6 +446,10 @@ function br.unlock:NNUnlock()
 		local ObjType = b.ObjectType(obj)
 		return ObjType == 8 or ObjType == 11
 	end
+	b.IsQuestObject = function(obj)
+		local flags = Nn.DynamicFlags(obj)
+		return bit.band(flags, 0x4) ~= 0 and bit.band(flags, 0x20) ~= 0
+	end
 	
 	------------------------- Unit -------------------------
 	b.UnitCreator =  ObjectCreator
@@ -467,7 +467,18 @@ function br.unlock:NNUnlock()
 	------------------------- World ---------------------------
 	b.ClickPosition = ClickPosition
 	b.TraceLine = TraceLine 
-
+	b.WorldToScreen = function(sx, sy, sz)
+		local sX, sY = WorldToScreen(sx, sy, sz)
+		if sX == 0 and sY == 0 then
+			return
+		end
+		local scale = UIParent:GetScale()
+		local width = UIParent:GetWidth() * scale
+		local height = UIParent:GetHeight() * scale
+		x = sX * width
+		y = (height - (sY * height))
+		return x, y
+	end
 	
 	------------------------- File System ----------------------------	
 	--ReadFile
