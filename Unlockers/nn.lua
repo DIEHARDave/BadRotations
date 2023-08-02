@@ -144,6 +144,7 @@ local globalCacheList =
 	"InitiateTrade",
 	"IsItemInRange",
 	"IsSpellInRange",
+	"IsUsableItem",
 	"IsWorldLootObject",
 	"PromoteToAssistant",
 	"SetPortraitTexture",
@@ -341,10 +342,9 @@ function br.unlock:NNUnlock()
 	--Nn.UnitFlags3
 	--Distance
 	--Nn.DynamicFlags
-	--Nn.ObjectLootable
+	--	b.ObjectLootable = Nn.ObjectLootable
 	--Nn.ObjectSkinnable
 	--PlayerObject
-	--Nn.GameObjectType
 	--GetMouseover
 	--SetMouseover
 	--LastHardwareAction
@@ -371,8 +371,8 @@ function br.unlock:NNUnlock()
 	end
 
 	------------------------- Math -------------------------
-	b.GetAnglesBetweenPositions	= GetAnglesBetweenPositions
-	b.GetPositionFromPosition = GetPositionFromPosition
+	b.GetAnglesBetweenPositions	= Nn.GetAnglesBetweenPositions
+	b.GetPositionFromPosition = Nn.GetPositionFromPosition
 	local math = math
 	b.GetDistanceBetweenPositions = function(X1, Y1, Z1, X2, Y2, Z2)
 		X2 = X2 - X1
@@ -429,7 +429,8 @@ function br.unlock:NNUnlock()
 	b.ObjectType = ObjectType
 	b.ObjectInteract = ObjectInteract
 	b.ObjectPointer = ObjectPointer
-	b.ObjectSummoner = ObjectSummoner
+	b.ObjectSummoner = Nn.ObjectSummoner
+	b.GameObjectType = Nn.GameObjectType
 	local om = {}
 	b.GetObjectCount = function()
 		om = Objects()
@@ -448,14 +449,14 @@ function br.unlock:NNUnlock()
 	end
 	b.IsQuestObject = function(obj)
 		local flags = Nn.DynamicFlags(obj)
-		return bit.band(flags, 0x4) ~= 0 and bit.band(flags, 0x20) ~= 0
+		return bit.band(flags, 0x4) ~= 0 and (bit.band(flags, 0x20) ~= 0 or bit.band(flags, 0x200) ~= 0) and bit.band(flags, 0x10) == 0
 	end
-	
+
 	------------------------- Unit -------------------------
-	b.UnitCreator =  ObjectCreator
+	b.UnitCreator =  Nn.ObjectCreator
 	b.UnitFacing = ObjectFacing
 	b.InteractUnit = ObjectInteract
-	b.UnitMovementFlags = UnitMovementFlag
+	b.UnitMovementFlags = Nn.UnitMovementFlag
 	b.UnitTarget = UnitTarget
 	b.UnitCastID = function(...)
 		local spellId1 = select(9, b.UnitCastingInfo(...)) or 0
@@ -555,6 +556,7 @@ function br.unlock:NNUnlock()
 		end
 		SetFocus(oldfocus)
 	end
+	b.IsHackEnabled = function(...) return false end
 	
 	--------------------------------
 	-- WoW API Reuse
@@ -574,7 +576,6 @@ function br.unlock:NNUnlock()
 	--------------------------------
 	-- Unlocker
 	--------------------------------
-	b.IsHackEnabled = function(...) return false end
 	br.unlocker = "NN"
 	return true
 end
